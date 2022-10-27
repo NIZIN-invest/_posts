@@ -1,1 +1,0 @@
-https://cockpit-project.org/
