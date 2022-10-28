@@ -242,10 +242,13 @@ for col in capa_df.columns[3:]:
 
 capa_df = capa_df.astype(capa_df_col_dic, errors='ignore')
 ```
+## Conclusão
 
-Agora que temos os dados vamos aprender como usa-los, veja a segunda etapa de nosso tutorial no artigo "A Fórmula Mágica, Escolhendo Ações"
+Além deste tutorial, temos outro que visa [obter os mesmos dados diretamente do site StatusInvest]({% post_url /financas_investimentos/2022-10-27-processando_dados_statusinvest %}).
 
-Além deste tutorial, temos outro que visa [obter os mesmos dados diretamente do site StatusInvest].
+Neste tutorial você aprendeu como criar uma credêncial no Google Cloud e como obter os dados de uma planilha do Google Drive através do módulo GSpread, se familiarizou com o módulo PANDAS que permite lidar com tabelas de dados dentro do Python.
+
+Nos próximos tutoriais você irá aprender cada vez mais sobre estes módulos e outros que serão extremamente úteis para suas Analises Fundamentalista e também Técnicas, facilitando sua tomada de decisão quanto a que ações comprar ou vender no curto, médio e longo prazo.
 
 ## Referências
 
