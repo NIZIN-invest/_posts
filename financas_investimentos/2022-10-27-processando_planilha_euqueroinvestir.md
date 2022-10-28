@@ -134,7 +134,7 @@ Agora vamos criar as credênciais propriamente, para isso entre no link:
  
 
 
-Para uso em outros cenários, reserve o e-mail encontrado na propriedade `client_email` do arquivo json que foi criado, como identidade para esta credêncial. Renomeie o arquivo para service_account.json e mova-o para o diretório que irá trabalhar.
+Para uso em outros cenários, reserve o e-mail encontrado na propriedade `client_email` do arquivo json que foi criado. Renomeie o arquivo para service_account.json e mova-o para o diretório que irá trabalhar.
 
 ## Conecte-se na planilha que deseja trabalhar
 
