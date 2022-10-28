@@ -1,7 +1,7 @@
 ---
 title: Criando credêncial para Google Cloud
 tags: [google cloud, cloud, credencial, google api, google drive, google sheet, google drive api, google sheet api, google api]
-categories: [ciencia de dados, investimentos]
+categories: [ciencia de dados, google api]
 layout: article
 share: true
 toc: true
