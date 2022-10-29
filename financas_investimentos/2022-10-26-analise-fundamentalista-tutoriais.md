@@ -1,6 +1,6 @@
 ---
 title: Analise Fundamentalista - Sequência de Tutoriais
-tags: [b3, investimento, ciencia de dados, acoes, ativos, aplicação, financeiro, status invest, analise fundamentalista, analise, tutorial]
+tags: [b3, investimento, ciencia de dados, acoes, ativos, aplicação, financeiro, status invest, analise fundamentalista, analise, tutorial, gspread, pandas, nunpy, mathplotLib, openpyxl, requests, pyfolio, pytz, zipfile]
 categories: [ciencia de dados, investimentos]
 layout: article
 share: true

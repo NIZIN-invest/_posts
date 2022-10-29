@@ -34,7 +34,7 @@ Para lermos o conteúdo do arquivo Zipado iremos usar o módulo ZipFile.
 
 Iremos trabalhar apenas com os arquivos anuais, futuramente em outros tutoriais adicionaremos recursos para baixar o mensal e anual, conforme a demanda.
 
-```
+{% highlight python linenos%}
 def get_cotacoes(ano, mes=None, dia=None, overwrite=True):
     
     if dia and mes:
@@ -78,21 +78,21 @@ def get_cotacoes(ano, mes=None, dia=None, overwrite=True):
         
         f.close()
         print('#')
-```
+{% endhighlight %}
 
 
 ## Ajustes nas datas
 
 Precisamos lembrar de setar o fusohorário que vamos trabalhar já que iremos lidar com datas, neste caso é '-3', iremos usar o módulo PyTZ para nos ajudar, instale com o comando 'pip install pytz',  então importe do módulo "datetime' o objeto 'datetime' e do módulo "pytz" o objeto 'timezone', e finalmente informe seu time zone, como estou no Ceará, usarei o TimeZone America/Fortaleza.
 
-```
+{% highlight python linenos%}
 from datetime import datetime
 from pytz import timezone
 
 tz = timezone('America/Fortaleza')
 data_e_hora_atuais = datetime.now()
 data_e_hora_atuais_tz = data_e_hora_atuais.astimezone(tz)
-```
+{% endhighlight %}
 
 ## Lendo o arquivo e convertendo para um DataFrame
 
@@ -190,7 +190,7 @@ DISMES
 
 Para ler o arquivo precisamos importar o módulo ZipFile. E então faremos o processamento do arquivo de dados diretamente dentro do arquivo compactado, que é um formato posicional como explicado anteriormente.
 
-```
+{% highlight python linenos%}
 from zipfile import ZipFile
 import pandas as pd
 
@@ -221,7 +221,7 @@ def processa_cotacoes(data_ano):
     cotacoes_df['INDOPC'].astype('category')
     
     return cotacoes_df
-```
+{% endhighlight %}
 
 Bem agora precisamos criar a função `processa_linha_cotacoes(linha).
 
@@ -231,7 +231,7 @@ Agora vamos criar a função que processa a linha e obtém os dados necessários
 
 Essa função é bem extensa em número de linhas de comando, pois precisamos processar cada campo do registro informada, o código é auto explicativo quanto a cada posição dos registros obtidos e já foram descritos acima.
 
-```
+{% highlight python linenos%}
 count = 0
 def processa_linha_cotacoes(reg):
     count = count + 1
@@ -270,7 +270,7 @@ def processa_linha_cotacoes(reg):
         if count != size:
             raise Excpetion("Arquivo Invalid, número de linhas diferente: foram processadas {}, mas era esperado {}".format(count, size))
     return dic
-```
+{% endhighlight %}
 
 ## Conclusão
 

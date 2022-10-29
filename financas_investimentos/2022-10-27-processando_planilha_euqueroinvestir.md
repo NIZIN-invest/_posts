@@ -1,6 +1,6 @@
 ---
 title: Processando a Planilha de dados fundamentalistas do Site Eu Quero Investir (EQI)
-tags: [b3, investimento, ciencia de dados, acoes, ativos, aplicação, financeiro, status invest, analise fundamentalista, analise]
+tags: [b3, investimento, ciencia de dados, acoes, ativos, aplicação, financeiro, status invest, analise fundamentalista, analise, gspread, pandas, nunpy, mathplotLib, openpyxl, requests, pyfolio, pytz, zipfile]
 categories: [ciencia de dados, investimentos]
 layout: article
 share: true
@@ -48,7 +48,7 @@ Para sucesso na instalação do MathPlotLib 3.2.2, defina a variável de ambient
 
 Outra forma de instala-las é uma a uma com os comandos:
 
-```
+{% highlight python linenos%}
 pip install gspread
 pip install pandas
 pip install Nunpy
@@ -57,7 +57,7 @@ pip install jinja2
 pip install openpyxl
 pip install requests
 pip install pyfolio
-```
+{% endhighlight %}
 
 ## Um pouco sobre as principais módulos 
 
@@ -144,11 +144,11 @@ Para conectar no Google Drive e a abrir a planilha, você deve já ter criado su
 
 Você pode fazer uma cópia para sua conta seguindo o link:  https://docs.google.com/spreadsheets/d/1feSww8-_w1aF2xkBChoSMY5Dbq-UQtZTDEBFmmbBckw/copy, lembre-se de compartilha-la com o e-mail reservado acima ou torna-la pública, para que seja possível acessa-la com seu código de análise. Também é preciso que reserve o ID da planilha que pode ser obtido na própria URL, usaremos aqui este ID já que ela é de acesso público, mas você pode substituir para o ID de sua própria planilha.
 
-```
+{% highlight python linenos%}
 import gspread as gs
 gc = gs.service_account(filename="./service_account.json")
 planilha = gc.open_by_key('1feSww8-_w1aF2xkBChoSMY5Dbq-UQtZTDEBFmmbBckw')
-```
+{% endhighlight %}
 
 Há duas outras formas de abrir a planilha, pelo nome e pela URL, pesquise nos manuais do `gspread` para mais detalhes.
 
@@ -156,9 +156,9 @@ Há duas outras formas de abrir a planilha, pelo nome e pela URL, pesquise nos m
 
 Nesta planilha há várias páginas (Worksheets), usaremos a primeira apenas, nomeada como "Capa", sendo assim use o seguinte comando para obter a página com todos os dados e informações de sua planilha, veja que, o nome da planilha é *case sensitve*:
 
-```
+{% highlight python linenos%}
 capa = planilha.worksheet("Capa")
-```
+{% endhighlight %}
 
 ## Obtendos os valores
 
@@ -173,41 +173,41 @@ Visitando a planilha original, vemos que as 5 primeiras linhas podem ser descart
 Então, use o seguinte código para obter o cabeçalho das colunas e descartar de nossa matriz (capa_values) o que não precisaremos.
 
 
-```
+{% highlight python linenos%}
 capa_values = capa.get_values()
 capa_headers = capa_values[5]
 capa_values = capa_values[6:]
-```
+{% endhighlight %}
 
 ## Indexando pelos Tickets
 
 É importante reservamos a primeira coluna para converte-la em indice das linhas, para que possamos acessar as linhas usando os Tickets (nome da ação). Lembre-se que as primeiras 6 linhas são descartáveis.
 
-```
+{% highlight python linenos%}
 capa_tickets = capa.col_values(1)
 capa_tickets = capa_tickets[6:]
-```
+{% endhighlight %}
 
 Esta etapa poderia ter sido feita em apenas uma linha com `capa_tickets = capa.col_values(1)[6:]`.
 
 Agora que temos os indices e cada linha, podemos remover a redundância dos indices de `capa_values` e ajustar `capa_headers`, já que não precisaremos da primeira coluna mais.
 
-```
+{% highlight python linenos%}
 for i in range(len(capa_tickets)):
   del capa_values[i][0]
 
 capa_headers = capa_headers[1:]
-```
+{% endhighlight %}
 
 ## Criando nosso Dataframe no Pandas
 
 E finalmente teremos um Dataframe, primeiro importamos o módulo *Pandas* com o aliase `pd`. e então informamos a matriz de dados `capa_values`, idendentficamos as colunas, e finalmente identificamos o indice contido em `capa_tickets`.
 
-```
+{% highlight python linenos%}
 import pandas as pd
 capa_df = pd.DataFrame(capa_values, columns=capa_headers)
 capa_df.index = capa_tickets
-```
+{% endhighlight %}
 
 Agora o dataframe com as colunas nomeadas com base nos valores de  `capa_headers` e os indices identificados pelos tickets obtidos de `capa_tickets`. 
 
@@ -215,24 +215,25 @@ Agora o dataframe com as colunas nomeadas com base nos valores de  `capa_headers
 
 Mas ainda não terminamos esta etapa de preparação dos dados, é preciso remover valores inválidos, converter valores prefixados e pósfixados como no caso de valores monetários e porcentágens já que a função gspread.get_values() não tem opção para retornar valores puros de seus formatos finais. Os valores invalidos são representados pela String `#N/A`, iremos substituir pelo valor 0, os demais valores terão seus sufixos removidos, e removeremos os espaços iniciais de cada objeto.
 
-```
+{% highlight python linenos%}
 capa_df.replace(to_replace=r'#N/A', regex=True, value='0', inplace=True)
 capa_df.replace(to_replace=r'R\$', regex=True, value='', inplace=True)
 capa_df.replace(to_replace=r'\%', regex=True, value='', inplace=True)
 capa_df.replace(to_replace=r'^ ', regex=True, value='', inplace=True)
-```
+{% endhighlight %}
+
 Agora vamos ajustas os valores para notação númerica internacional, já que a planilha está nos entregando os valores decimais separos com vírgula e os milhares com ponto.
 
-```
+{% highlight python linenos%}
 capa_df.replace(to_replace=r'\.', regex=True, value='', inplace=True)
 capa_df.replace(to_replace=r',', regex=True, value='.', inplace=True)
-```
+{% endhighlight %}
 
 Converteremos agora os valores para seu tipo adequado, existe uma função `convert_dtypes` do Pandas porém ela não consegue converter as colunas como desejamos, sendo assim, temos uma alternativa apresentada abaixo.
 
 Veja que, primeiro pegamos as 3 primeiras colunas que são as categorias (`category`) e pegamos as restantes e definimos como float (`float32`).
 
-```
+{% highlight python linenos%}
 capa_df_col_dic = {}
 for col in capa_df.columns[0:3]:
   capa_df_col_dic[col] = "category"
@@ -241,7 +242,8 @@ for col in capa_df.columns[3:]:
   capa_df_col_dic[col] = "float32"
 
 capa_df = capa_df.astype(capa_df_col_dic, errors='ignore')
-```
+{% endhighlight %}
+
 ## Conclusão
 
 Além deste tutorial, temos outro que visa [obter os mesmos dados diretamente do site StatusInvest]({% post_url /financas_investimentos/2022-10-27-processando_dados_statusinvest %}).
