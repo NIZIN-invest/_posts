@@ -32,7 +32,7 @@ year = 1997
 resmax = []
 for month in range(1, 13):
   resmax.append(str(
-    max(max(week[0:5] for week in calendar.monthcalendar(year, month)))) + "/" + str(month)+ "/" + str(year))
+    max(max(week[0:5] for week in calendar.monthcalendar(year, month)))) + "-" + str(month)+ "-" + str(year))
 
 resmin = []
 for month in range(1, 13):
@@ -42,7 +42,7 @@ for month in range(1, 13):
             if 0 == d:
             calmin[i][j] = 32
     resmin.append(str(
-        min([week[0:5] for week in calmin][0])) + '/' + str(month) + '/' + str(year))
+        min([week[0:5] for week in calmin][0])) + '-' + str(month) + '-' + str(year))
 
 print(" Alista não leva em conta feriados!")
 print("Lista de primeiros dias úteis: " + str(resmin))
