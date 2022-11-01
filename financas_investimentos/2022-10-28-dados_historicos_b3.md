@@ -206,23 +206,27 @@ def processa_cotacoes(ano):
     with ZipFile(arq_zip_cotacoes, 'r') as zip:
         arq_cotacoes = "COTAHIST_A{}.TXT".format(ano)
         print('#', end='')
-        cotacoes = zip.read(arq_cotacoes)
-        print('#', end='')
-        #
-        for linha in cotacoes:
-            pd.append(processa_linha_cotacoes(linha))
-        #          
-            print('.', end='')
-        #
+        with zip.open(arq_cotacoes) as cotacoes:
+            print('#', end='')
+            #
+            cotacoes_df = pd.DataFrame()
+            count = 0
+            for linha in cotacoes:
+                count = count + 1
+                dic = processa_linha_cotacoes(linha.decode('utf8'),count)
+                if dic:
+                    cotacoes_df = cotacoes_df.append(dic, ignore_index=True)
+                #                
+                print('.', end='')
         zip.close()
-    #
-    print('#')
     #
     cotacoes_df['CODBDI'].astype("category")
     cotacoes_df['TPMERC'].astype("category")
     cotacoes_df['ESPECI'].astype('category')
     cotacoes_df['INDOPC'].astype('category')
     #
+    print('#')
+    #    
     return cotacoes_df
 {% endhighlight %}
 
@@ -235,37 +239,35 @@ Agora vamos criar a função que processa a linha e obtém os dados necessários
 Essa função é bem extensa em número de linhas de comando, pois precisamos processar cada campo do registro informada, o código é auto explicativo quanto a cada posição dos registros obtidos e já foram descritos acima.
 
 {% highlight python linenos%}
-count = 0
-def processa_linha_cotacoes(reg):
-    count = count + 1
+def processa_linha_cotacoes(reg,count):
     dic = {}
     if reg[0:2] == '01':  # Registro de dados
-        dic['DATAPREG'] = datetime.strptime(reg[2:10].decode('utf-8'), '%Y%m%d').astimezone(tz)
-        dic['CODBDI'] = reg[10:12].decode('utf-8')
-        dic['CODNEG'] = reg[12:24].decode('utf-8')
-        dic['TPMERC'] = int(reg[24:27].decode('utf-8'))
-        dic['NOMRES'] = reg[27:39].decode('utf-8')
-        dic['ESPECI'] = reg[39:49].decode('utf-8')
-        dic['PRAZOT'] = int(reg[49:52].decode('utf-8'))
-        dic['MODREF'] = reg[52:56].decode('utf-8')
-        dic['PREABE'] = float(reg[56:69].decode('utf-8'))/100
-        dic['PREMAX'] = float(reg[69:82].decode('utf-8'))/100
-        dic['PREMIN'] = float(reg[82:95].decode('utf-8'))/100
-        dic['PREMED'] = float(reg[95:108].decode('utf-8'))/100
-        dic['PREULT'] = float(reg[108:121].decode('utf-8'))/100
-        dic['PREOFC'] = float(reg[121:134].decode('utf-8'))/100
-        dic['PREOFV'] = float(reg[134:147].decode('utf-8'))/100
-        dic['TOTNEG'] = int(reg[147:152].decode('utf-8'))
-        dic['QUATOT'] = int(reg[152:170].decode('utf-8'))
-        dic['VALTOT'] = float(reg[170:188].decode('utf-8'))/100
-        dic['PREEXE'] = float(reg[188:201].decode('utf-8'))/100
-        dic['INDOPC'] = int(reg[201:202].decode('utf-8'))
-        dic['DATVEN'] = datetime.strptime(reg[202:210].decode('utf-8'), '%Y%m%d').astimezone(tz)
-        dic['FATCOT'] = int(reg[210:217].decode('utf-8'))
-        dic['PTOEXE'] = float(reg[217:230].decode('utf-8'))/1000000
-        dic['CODISI'] = reg[230:242].decode('utf-8')
-        dic['DISMES'] = int(reg[242:245].decode('utf-8'))
-    #    
+        dic['DATAPREG'] = datetime.strptime(reg[2:10], '%Y%m%d').astimezone(tz)
+        dic['CODBDI'] = reg[10:12].strip()
+        dic['CODNEG'] = reg[12:24].strip()
+        dic['TPMERC'] = int(reg[24:27])
+        dic['NOMRES'] = reg[27:39].strip()
+        dic['ESPECI'] = reg[39:49].strip()
+        dic['PRAZOT'] = int(reg[49:52]) if reg[49:52].strip() else 0
+        dic['MODREF'] = reg[52:56].strip()
+        dic['PREABE'] = float(reg[56:69])/100
+        dic['PREMAX'] = float(reg[69:82])/100
+        dic['PREMIN'] = float(reg[82:95])/100
+        dic['PREMED'] = float(reg[95:108])/100
+        dic['PREULT'] = float(reg[108:121])/100
+        dic['PREOFC'] = float(reg[121:134])/100
+        dic['PREOFV'] = float(reg[134:147])/100
+        dic['TOTNEG'] = int(reg[147:152])
+        dic['QUATOT'] = int(reg[152:170])
+        dic['VALTOT'] = float(reg[170:188])/100
+        dic['PREEXE'] = float(reg[188:201])/100
+        dic['INDOPC'] = int(reg[201:202])
+        dic['DATVEN'] = datetime.strptime(reg[202:210], '%Y%m%d').astimezone(tz)
+        dic['FATCOT'] = int(reg[210:217])
+        dic['PTOEXE'] = float(reg[217:230])/1000000
+        dic['CODISI'] = reg[230:242].strip()
+        dic['DISMES'] = int(reg[242:245])
+        
     elif reg[0:2] == '00': # Registro de metadados
         print("Arquivo criado em {}".format(datetime.strptime(reg[23:30], '%Y%m%d')))
         return
@@ -275,6 +277,7 @@ def processa_linha_cotacoes(reg):
             raise Exception("Arquivo Invalid, número de linhas diferente: foram processadas {}, mas era esperado {}".format(count, size))
         return
     return dic
+
 {% endhighlight %}
 
 ## Usando as funções acima
