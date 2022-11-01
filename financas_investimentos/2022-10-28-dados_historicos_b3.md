@@ -43,12 +43,12 @@ def get_cotacoes(ano, mes=None, dia=None, overwrite=True):
         zip_file_name = "COTAHIST_M{:02d}{}.ZIP".format(mes,dia);
     else:
         zip_file_name = "COTAHIST_A{}.ZIP".format(ano);
-
+    #
     dest_path_file = Path("cotacoes/" + zip_file_name)
     if dest_path_file.is_file() and not overwrite:
         print("Arquivo {} já existe, não será baixado!".format(zip_file_name))
         return
-
+    #
     print("Obtendo histórico {}".format(zip_file_name))
     url = "https://bvmf.bmfbovespa.com.br/InstDados/SerHist/"+zip_file_name
     headers = { 'accept': '*/*',
@@ -64,10 +64,10 @@ def get_cotacoes(ano, mes=None, dia=None, overwrite=True):
       'user-agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko)'}
     get_response = req.get(url,stream=True, headers = headers)
     print('#', end='')
-    
+    #
     file_name  = "./cotacoes/" + zip_file_name
     os.makedirs("./cotacoes", exist_ok=True)
-    
+    #
     with open(file_name, 'wb') as f:
         print('#', end='')
         
@@ -194,32 +194,32 @@ Para ler o arquivo precisamos importar o módulo ZipFile. E então faremos o pro
 from zipfile import ZipFile
 import pandas as pd
 
-def processa_cotacoes(data_ano):
-    arq_zip_cotacoes = "cotacoes/COTAHIST_A{}.ZIP".format(data_ano)
+def processa_cotacoes(ano):
+    arq_zip_cotacoes = "cotacoes/COTAHIST_A{}.ZIP".format(ano)
     print('#', end='')
-    
+    #
     cotacoes_df = pd.DataFrame()
-    
+    #
     with ZipFile(arq_zip_cotacoes, 'r') as zip:
-        arq_cotacoes = "COTAHIST_A{}.TXT".format(data_ano)
+        arq_cotacoes = "COTAHIST_A{}.TXT".format(ano)
         print('#', end='')
         cotacoes = zip.read(arq_cotacoes)
         print('#', end='')
-        
+        #
         for linha in cotacoes:
             pd.append(processa_linha_cotacoes(linha))
-                   
+        #          
             print('.', end='')
-        
+        #
         zip.close()
-    
+    #
     print('#')
-    
+    #
     cotacoes_df['CODBDI'].astype("category")
     cotacoes_df['TPMERC'].astype("category")
     cotacoes_df['ESPECI'].astype('category')
     cotacoes_df['INDOPC'].astype('category')
-    
+    #
     return cotacoes_df
 {% endhighlight %}
 
@@ -262,7 +262,7 @@ def processa_linha_cotacoes(reg):
         dic['PTOEXE'] = float(reg[217:230].decode('utf-8'))/1000000
         dic['CODISI'] = reg[230:242].decode('utf-8')
         dic['DISMES'] = int(reg[242:245].decode('utf-8'))
-        
+    #    
     elif reg[0:2] == '00': # Registro de metadados
         print("Arquivo criado em {}".format(datetime.strptime(reg[23:30], '%Y%m%d')))
         return
