@@ -35,6 +35,9 @@ Para lermos o conteúdo do arquivo Zipado iremos usar o módulo ZipFile.
 Iremos trabalhar apenas com os arquivos anuais, futuramente em outros tutoriais adicionaremos recursos para baixar o mensal e anual, conforme a demanda.
 
 {% highlight python linenos%}
+import os
+from pathlib import Path
+import requests as req
 def get_cotacoes(ano, mes=None, dia=None, overwrite=True):
     
     if dia and mes:
