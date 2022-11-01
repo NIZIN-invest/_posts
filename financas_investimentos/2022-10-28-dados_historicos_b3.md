@@ -274,6 +274,17 @@ def processa_linha_cotacoes(reg):
     return dic
 {% endhighlight %}
 
+## Usando as funções acima
+
+O uso das funções ficou bem simplicado, basta chamar as funções na seguinte ordem:
+
+{% highlight python %}
+ano = 2022
+get_cotacoes(ano=ano)
+processa_cotacoes(ano=ano)
+{% endhighlight %}
+
+
 ## Conclusão
 
 Fizemos neste tutorial dois passos muito importantes para manutenção de sua base de dados para analise fundamentalista e técnica, você aprendeu aqui a baixar um arquivo diretamente no site da B3 e um segundo passo como processar o arquivo para ter um dataframe que será usado nos próximos tutoriais.
