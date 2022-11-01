@@ -213,8 +213,8 @@ def processa_cotacoes(data_ano):
         
         zip.close()
     
-       print('#')
-
+    print('#')
+    
     cotacoes_df['CODBDI'].astype("category")
     cotacoes_df['TPMERC'].astype("category")
     cotacoes_df['ESPECI'].astype('category')
@@ -236,7 +236,7 @@ count = 0
 def processa_linha_cotacoes(reg):
     count = count + 1
     dic = {}
-    if reg[0:2] == 01:  # Registro de dados
+    if reg[0:2] == '01':  # Registro de dados
         dic['DATAPREG'] = datetime.strptime(reg[2:10].decode('utf-8'), '%Y%m%d').astimezone(tz)
         dic['CODBDI'] = reg[10:12].decode('utf-8')
         dic['CODNEG'] = reg[12:24].decode('utf-8')
@@ -254,21 +254,23 @@ def processa_linha_cotacoes(reg):
         dic['PREOFV'] = float(reg[134:147].decode('utf-8'))/100
         dic['TOTNEG'] = int(reg[147:152].decode('utf-8'))
         dic['QUATOT'] = int(reg[152:170].decode('utf-8'))
-        dic['VALTOT'] = float(reg[170:188].decode('utf-8')))/100
-        dic['PREEXE'] = float(reg[188:201].decode('utf-8')))/100
+        dic['VALTOT'] = float(reg[170:188].decode('utf-8'))/100
+        dic['PREEXE'] = float(reg[188:201].decode('utf-8'))/100
         dic['INDOPC'] = int(reg[201:202].decode('utf-8'))
-        dic['DATVEN'] = datetime.strptime(reg[202:210].decode('utf-8'), '%Y%m%d')).astimezone(tz)
+        dic['DATVEN'] = datetime.strptime(reg[202:210].decode('utf-8'), '%Y%m%d').astimezone(tz)
         dic['FATCOT'] = int(reg[210:217].decode('utf-8'))
-        dic['PTOEXE'] = float(reg[217:230].decode('utf-8')))/1000000
-        dic['PTOEXE'] = reg[230:242].decode('utf-8'))
+        dic['PTOEXE'] = float(reg[217:230].decode('utf-8'))/1000000
+        dic['CODISI'] = reg[230:242].decode('utf-8')
         dic['DISMES'] = int(reg[242:245].decode('utf-8'))
         
-    elif reg[0:2].decode('utf-8') == '00':
-        print("Arquivo criado em {}".format(datetime.strptime(reg[23:30].decode('utf-8'), '%Y%m%d'))
-    elif reg[0:2].decode('utf-8') == '99' # Registro de metadados
-        size = int(reg[31:42].decode('utf-8'))
+    elif reg[0:2] == '00': # Registro de metadados
+        print("Arquivo criado em {}".format(datetime.strptime(reg[23:30], '%Y%m%d')))
+        return
+    elif reg[0:2] == '99': # Registro de metadados
+        size = int(reg[31:42])
         if count != size:
-            raise Excpetion("Arquivo Invalid, número de linhas diferente: foram processadas {}, mas era esperado {}".format(count, size))
+            raise Exception("Arquivo Invalid, número de linhas diferente: foram processadas {}, mas era esperado {}".format(count, size))
+        return
     return dic
 {% endhighlight %}
 
