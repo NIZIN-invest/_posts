@@ -277,7 +277,7 @@ def processa_linha_cotacoes(reg,count):
         dic['DISMES'] = int(reg[242:245])
     #   
     elif reg[0:2] == '00': # Registro de metadados
-        print("Arquivo criado em {}".format(datetime.strptime(reg[23:30], '%Y%m%d')))
+        print("Arquivo criado em {}".format(datetime.strptime(reg[23:31], '%Y%m%d')))
         return
     elif reg[0:2] == '99': # Registro de metadados
         size = int(reg[31:42])
