@@ -94,4 +94,7 @@ Como pode ver pouco código foi alterado, apenas não criamos mais o Dataframe e
 
 O código acima é didático e deve ser otimizado para uso na prática com históricos anuais. Colocamos no [GIST (clique aqui)](https://gist.github.com/carlosdelfino/f17caa6c66cd2b96c5715edeb6b624a3) este mesmo código um pouco mais otimizado, vejao que pode melhorar com o conhecimento que você já tem.
 
+## Referência
 
+* [Gerenciando banco de dados SQLite3 com Python](http://pythonclub.com.br/gerenciando-banco-dados-sqlite3-python-parte1.html#inserindo-um-registro-com-parametros-de-entrada-definido-pelo-usuario)
+* [SQLite Utils](https://sqlite-utils.datasette.io/en/3.14/installation.html)
