@@ -307,6 +307,8 @@ Veja que eu parametrizo o python para não emitir warnings, já que estou usando
 
 Fizemos neste tutorial dois passos muito importantes para manutenção de sua base de dados para analise fundamentalista e técnica, você aprendeu aqui a baixar um arquivo diretamente no site da B3 e um segundo passo como processar o arquivo para ter um dataframe que será usado nos próximos tutoriais.
 
+Porém é importante ressaltar que devido a quantidade de registros e a metodlógia usada o processo é muito lento e pode haver estouro de memória interrompendo o processo após 180 mil registros, apresentaremos outro artigo com uma solução baseada em banco de dados, aguarde.
+
 ## Referências
 
 * https://stackoverflow.com/questions/22676/how-to-download-a-file-over-http
