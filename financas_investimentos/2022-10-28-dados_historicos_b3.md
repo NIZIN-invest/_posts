@@ -197,8 +197,14 @@ Para ler o arquivo precisamos importar o módulo ZipFile. E então faremos o pro
 from zipfile import ZipFile
 import pandas as pd
 
-def processa_cotacoes(ano):
-    arq_zip_cotacoes = "cotacoes/COTAHIST_A{}.ZIP".format(ano)
+def processa_cotacoes(ano, mes=None, dia=None, overwrite=True):
+    if dia and mes:
+        zip_file_name = "COTAHIST_D{}{}{}.ZIP".format(ano,mes,dia);
+    elif mes:
+        zip_file_name = "COTAHIST_M{}{}.ZIP".format(mes,dia);
+    else:
+        zip_file_name = "COTAHIST_A{}.ZIP".format(ano);
+    zip_file_name = "cotacoes/" + zip_file_name
     print('#', end='')
     #
     cotacoes_df = pd.DataFrame()
@@ -218,6 +224,8 @@ def processa_cotacoes(ano):
                     cotacoes_df = cotacoes_df.append(dic, ignore_index=True)
                 #                
                 print('.', end='')
+                if not count % 40:
+                    print(" " + str(count)) 
         zip.close()
     #
     cotacoes_df['CODBDI'].astype("category")
@@ -267,7 +275,7 @@ def processa_linha_cotacoes(reg,count):
         dic['PTOEXE'] = float(reg[217:230])/1000000
         dic['CODISI'] = reg[230:242].strip()
         dic['DISMES'] = int(reg[242:245])
-        
+    #   
     elif reg[0:2] == '00': # Registro de metadados
         print("Arquivo criado em {}".format(datetime.strptime(reg[23:30], '%Y%m%d')))
         return
@@ -275,21 +283,25 @@ def processa_linha_cotacoes(reg,count):
         size = int(reg[31:42])
         if count != size:
             raise Exception("Arquivo Invalid, número de linhas diferente: foram processadas {}, mas era esperado {}".format(count, size))
-        return
+        return    
     return dic
-
+#
 {% endhighlight %}
 
 ## Usando as funções acima
 
-O uso das funções ficou bem simplicado, basta chamar as funções na seguinte ordem:
+O uso das funções ficou bem simplicado, basta chamar as funções na seguinte ordem. :
 
 {% highlight python %}
+import warnings
+warnings.filterwarnings("ignore")
+
 ano = 2022
 get_cotacoes(ano=ano)
 processa_cotacoes(ano=ano)
 {% endhighlight %}
 
+Veja que eu parametrizo o python para não emitir warnings, já que estou usando o método `Pandas.append` que será descontinuado em versões futuras, o como você melhoria este código?
 
 ## Conclusão
 
