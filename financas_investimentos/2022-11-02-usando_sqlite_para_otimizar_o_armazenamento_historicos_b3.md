@@ -56,17 +56,22 @@ from zipfile import ZipFile
 import pandas as pd
 
 def processa_cotacoes_db(ano, mes=None, dia=None, overwrite=True):
+    
     if dia and mes:
-        zip_file_name = "COTAHIST_D{}{}{}.ZIP".format(ano,mes,dia);
+        file_name = "COTAHIST_D{{:0>4}}{{:0>2}}{{:0>2}}".format(ano,mes,dia)
     elif mes:
-        zip_file_name = "COTAHIST_M{}{}.ZIP".format(mes,dia);
+        file_name = "COTAHIST_M{{:0>4}}{{:0>2}}".format(ano,mes)
     else:
-        zip_file_name = "COTAHIST_A{}.ZIP".format(ano);
-    arq_zip_cotacoes = "cotacoes/" + zip_file_name
+        file_name = "COTAHIST_A{{:0>4}}".format(ano)
+    #
+    zip_file_name = "cotacoes/" + file_name + ".ZIP"
     print('#', end='')
     #
-    with ZipFile(arq_zip_cotacoes, 'r') as zip:
-        arq_cotacoes = "COTAHIST_A{}.TXT".format(ano)
+    os.makedirs("./cotacoes/database", exist_ok=True)
+    db = Database("cotacoes/database/historico_b3.db")
+    #
+    with ZipFile(zip_file_name, 'r') as zip:
+        arq_cotacoes = file_name + ".TXT"
         print('#', end='')
         with zip.open(arq_cotacoes) as cotacoes:
             print('#', end='')

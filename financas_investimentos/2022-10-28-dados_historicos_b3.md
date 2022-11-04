@@ -41,18 +41,19 @@ import requests as req
 def get_cotacoes(ano, mes=None, dia=None, overwrite=True):
     
     if dia and mes:
-        file_name = "COTAHIST_D{:02d}{:02d}{}.ZIP".format(dia,mes,ano);
+        file_name = "COTAHIST_D{{:0>4}}{{:0>2}}{{:0>2}}".format(ano,mes,dia)
     elif mes:
-        file_name = "COTAHIST_M{:02d}{}.ZIP".format(mes,dia);
+        file_name = "COTAHIST_M{{:0>4}}{{:0>2}}".format(ano,mes)
     else:
-        file_name = "COTAHIST_A{}.ZIP".format(ano);
+        file_name = "COTAHIST_A{{:0>4}}".format(ano)
     #
-    dest_path_file = Path("cotacoes/" + file_name)
+    zip_file_name = "cotacoes/" + file_name + ".ZIP"
+    dest_path_file = Path("cotacoes/" + zip_file_name)
     if dest_path_file.is_file() and not overwrite:
         print("Arquivo {} já existe, não será baixado!".format(file_name))
         return
     #
-    print("Obtendo histórico {}".format(file_name))
+    print("Obtendo histórico {}".format(zip_file_name))
     url = "https://bvmf.bmfbovespa.com.br/InstDados/SerHist/"+file_name
     headers = { 'accept': '*/*',
       'accept-language': 'en-US,en;q=0.9,pt-BR;q=0.8,pt;q=0.7,es-MX;q=0.6,es;q=0.5',
@@ -68,10 +69,10 @@ def get_cotacoes(ano, mes=None, dia=None, overwrite=True):
     get_response = req.get(url,stream=True, headers = headers)
     print('#', end='')
     #
-    file_name  = "./cotacoes/" + file_name
+    dest_name  = "./cotacoes/" + zip_file_name
     os.makedirs("./cotacoes", exist_ok=True)
     #
-    with open(file_name, 'wb') as f:
+    with open(dest_name, 'wb') as f:
         print('#', end='')
         
         for chunk in get_response.iter_content(chunk_size=1024):
@@ -199,18 +200,19 @@ import pandas as pd
 
 def processa_cotacoes(ano, mes=None, dia=None, overwrite=True):
     if dia and mes:
-        file_name = "COTAHIST_D{}{}{}.ZIP".format(ano,mes,dia);
+        file_name = "COTAHIST_D{{:0>4}}{{:0>2}}{{:0>2}}".format(ano,mes,dia)
     elif mes:
-        file_name = "COTAHIST_M{}{}.ZIP".format(mes,dia);
+        file_name = "COTAHIST_M{{:0>4}}{{:0>2}}".format(ano,mes)
     else:
-        file_name = "COTAHIST_A{}.ZIP".format(ano);
-    arq_zip_cotacoes = "cotacoes/" + file_name
+        file_name = "COTAHIST_A{{:0>4}}".format(ano)
+    #
+    zip_file_name = "cotacoes/" + file_name + ".ZIP"
     print('#', end='')
     #
     cotacoes_df = pd.DataFrame()
     #
-    with ZipFile(arq_zip_cotacoes, 'r') as zip:
-        arq_cotacoes = file_name
+    with ZipFile(zip_file_name, 'r') as zip:
+        arq_cotacoes = file_name + ".TXT"
         print('#', end='')
         with zip.open(arq_cotacoes) as cotacoes:
             print('#', end='')
