@@ -49,7 +49,7 @@ Veja que criamos um novo subdiretório para armazenar nosso banco de dados. alé
 
 ## Processando e inserido os dados 
 
-Agora se vocẽ ainda não leu e pois em prática o código do artigo ["Obtendo os Dados Históricos da B3]({% post_url /financas_investimentos/2022-10-28-dados_historicos_b3 %}), faça primeiro pois vamos precisar das funções lá criadas para obter os arquivos, a função de processamento será ajustada e renomeada para `processa_cotacoes_db`, as demais funções continuam com o mesmo algoritmo.
+Agora, se vocẽ ainda não leu e colocou em prática o código do artigo ["Obtendo os Dados Históricos da B3]({% post_url /financas_investimentos/2022-10-28-dados_historicos_b3 %}), faça primeiro pois vamos precisar das funções lá criadas, para obter os arquivos, a função de processamento será ajustada e renomeada para `processa_cotacoes_db`, as demais funções continuam com o mesmo algoritmo.
 
 {% highlight python linenos%}
 from zipfile import ZipFile
@@ -58,11 +58,11 @@ import pandas as pd
 def processa_cotacoes_db(ano, mes=None, dia=None, overwrite=True):
     
     if dia and mes:
-        file_name = "COTAHIST_D{{:0>4}}{{:0>2}}{{:0>2}}".format(ano,mes,dia)
+        file_name = "COTAHIST_D{:0>4}{:0>2}{:0>2}".format(ano,mes,dia)
     elif mes:
-        file_name = "COTAHIST_M{{:0>4}}{{:0>2}}".format(ano,mes)
+        file_name = "COTAHIST_M{:0>4}{:0>2}".format(ano,mes)
     else:
-        file_name = "COTAHIST_A{{:0>4}}".format(ano)
+        file_name = "COTAHIST_A{:0>4}".format(ano)
     #
     zip_file_name = "cotacoes/" + file_name + ".ZIP"
     print('#', end='')
