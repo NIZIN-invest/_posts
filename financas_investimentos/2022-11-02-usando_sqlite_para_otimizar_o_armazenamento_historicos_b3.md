@@ -16,7 +16,7 @@ image:
   feature: financas_investimentos/b3-header.png
   teaser: financas_investimentos/b3-logo.png
   credit: Diversas Origens
-math: true
+math: false
 ---
 
 Visto que os históricos anuais da B3 são muito grandes para serem manipulados diretamente em memória, principalmente quando precisamos lidar com mais de um arquivo, apresentarei uma solução para uso do SQLite como meio de armazenamento e obtenão estruturada dos registros. O pandas oferece integração com SQLite, sendo assim, apresentaremos o uso de ambos.
