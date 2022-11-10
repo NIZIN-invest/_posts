@@ -269,7 +269,7 @@ def processa_linha_cotacoes(reg,count):
         dic['PREOFV'] = float(reg[134:147])/100
         dic['TOTNEG'] = int(reg[147:152])
         dic['QUATOT'] = int(reg[152:170])
-        dic['VALTOT'] = float(reg[170:188])/100
+        dic['VOLTOT'] = float(reg[170:188])/100
         dic['PREEXE'] = float(reg[188:201])/100
         dic['INDOPC'] = int(reg[201:202])
         dic['DATVEN'] = datetime.strptime(reg[202:210], '%Y%m%d').astimezone(tz)
